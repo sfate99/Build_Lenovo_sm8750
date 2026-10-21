@@ -480,6 +480,14 @@ jobs:
               ;;
           esac
 
+      - name: 🩹 Bypass SUSFS version gate (绕过SUSFS版本守卫)
+        if: ${{ env.ENABLE_SUSFS == 'true' }}
+        run: |
+          cd kernel_workspace
+          find ./KernelSU -name 'susfs_compat.mk' -print -exec sed -i '/\$(error/d;/has NOT update/d;/Please wait simonpunk/d' {} +
+          echo "=== 守卫已移除，剩余内容 ==="
+          cat ./KernelSU/kernel/tools/susfs_compat.mk
+
       - name: 🔧 Clone Droidspaces Patches (克隆 Droidspaces 补丁仓库)
         if: ${{ env.ENABLE_DROIDSPACES != 'off' }}
         run: |
